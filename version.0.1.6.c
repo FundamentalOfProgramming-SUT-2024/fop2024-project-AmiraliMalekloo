@@ -217,8 +217,11 @@ Room* gen_room(int ver_0,int hor_0,int down,int hide_1,int hide_2,int hide_3,int
     R->num_doors = 1;
     for(int i=0;i<4;i++){
         R->door[i]=(Door *)malloc(sizeof(Door));
+        R->door[i]->hidden = 0;
+        R->door[i]->position.x = 0;
+        R->door[i]->position.y = 0;
     }
-    //if(gen_rand(0,1001)%2==1){
+    // Right Door:
     R->door[0]->position.x=gen_rand(R->ver+1,R->ver+R->length-1);
     R->door[0]->position.y=R->hor;
     R->num_doors ++;
@@ -226,8 +229,7 @@ Room* gen_room(int ver_0,int hor_0,int down,int hide_1,int hide_2,int hide_3,int
         R->door[0]->hidden=1;
     }
     else R->door[0]->hidden=0;
-    //}
-    //else {R->door[0]=NULL;}
+    // North or South 
     if(down==1){
         R->door[3]=NULL;
         R->door[1]->position.y=gen_rand(R->hor+1,R->hor+R->width-1);
@@ -246,15 +248,16 @@ Room* gen_room(int ver_0,int hor_0,int down,int hide_1,int hide_2,int hide_3,int
         }
         else R->door[3]->hidden=0;
     }
-    //if(gen_rand(0,1001)%2==1){
+    //  Left
     R->door[2]->position.x=gen_rand(R->ver+1,R->ver+R->length-1);
     R->door[2]->position.y=R->hor+R->width;
     R->num_doors ++;
-
     if(hide_3==1){
         R->door[2]->hidden=1;
     }
     else R->door[2]->hidden=0;
+
+    //Traps
     R->traps = (Trap*)malloc(Trap_num*sizeof(Trap));
     R->Trap_num=Trap_num;
     for(int j=0;j<Trap_num;j++){
@@ -266,9 +269,6 @@ Room* gen_room(int ver_0,int hor_0,int down,int hide_1,int hide_2,int hide_3,int
     }
 
 
-
-    //}
-    //else { R->door[2]=NULL;}
 
     return R;
 }
@@ -321,7 +321,7 @@ void print_map(char map[Rows-bRow][Cols-bCol],char show[Rows-bRow][Cols-bCol]){
 }
 
 int make_map(Game * g,char map[Rows-bRow][Cols-bCol],char show[Rows-bRow][Cols-bCol],object obs[Rows-bRow][Cols-bCol],int floor){
-    //making rooms
+    //making borders
     for(int i=0;i<Rows-bRow;i++){
         for(int j=0;j<Cols-bCol;j++){
             map[i][j]=' ';
@@ -341,15 +341,13 @@ int make_map(Game * g,char map[Rows-bRow][Cols-bCol],char show[Rows-bRow][Cols-b
             if(map[i][X]=='O') map[i][X]='X';
         }
     }
-    // stairs 
-    int n=gen_rand(1,5);
-    int m=gen_rand(2,7);
-    if(floor%2==0){
-        map[m+25][n]='<';
-    }
-    else{
-        map[m][n]='<';
-    }
+
+
+    // Add stairs
+    int n = gen_rand(1, 5), m = gen_rand(2, 7);
+    map[(floor % 2) ? m : m + 25][n] = '<';
+
+    
     //adding path between doors
     char ** mark;
     pos ** parent;
