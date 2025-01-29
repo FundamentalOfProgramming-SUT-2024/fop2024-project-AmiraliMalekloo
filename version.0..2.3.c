@@ -1486,9 +1486,3 @@ int main(){
 
     return 0;
 }
-
-// Hello in this C code related to a game , one part is for moving the player sign in move_player function
-// this function does not work correctly. also , I want to show a room completely when the user enters is 
-//(which is equviliant to touching a door)
-//also taping f and an arrow shoud mobe the player untill it faces a block
-//I've written code for all these features but they don't work . please debug them 
